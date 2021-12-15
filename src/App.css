@@ -1,0 +1,15 @@
+.App {
+  text-align: center;
+}
+
+.songRow:hover {
+  background: #f1f1f1;
+}
+
+.playlistRow:hover {
+  background: #f1f1f1;
+}
+
+.activeRow {
+  background: #c6c6c6;
+}
