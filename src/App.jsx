@@ -9,6 +9,7 @@ import TopBar from "./components/TopBar"
 import PlaylistDisplay from "./components/PlaylistDisplay"
 import PlaylistUpload from "./components/PlaylistUpload"
 import Settings from "./components/Settings"
+import NewSongDisplay from "./components/NewSongDisplay"
 
 export default class App extends Component {
     constructor(props) {
@@ -25,7 +26,7 @@ export default class App extends Component {
             activeIndex: undefined,
             songToAdd: undefined,
             port: process.env.PORT ? String(process.env.PORT) : "5000",
-            usePort: false,
+            usePort: true,
         }
         console.log(process.env.REACT_APP_PORT)
     }
@@ -235,6 +236,7 @@ export default class App extends Component {
                                                                                removeFromPlaylist={this.removeFromPlaylist}
                                                                                deleteSong={this.deleteSong}/></Route>
                     <Route exact path="/Settings"><Settings/></Route>
+                    <Route exact path="/NewSongDisplay"><NewSongDisplay/></Route>
                 </Switch>
                 <ProgressBar songList={this.state.songList} curSong={this.state.curSong}
                              onActiveIndexChange={this.setActiveIndex} usePort={this.state.usePort} port={this.state.port}/>

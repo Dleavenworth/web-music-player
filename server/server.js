@@ -26,6 +26,9 @@ app.use(express.static(path.join(__dirname, '../build')));
 let db
 MongoClient.connect(Db, {useUnifiedTopology: true}, (err, client) => {
     if (err) {
+        console.log(process.env)
+        console.log(process.env.ATLAS_URI)
+        console.log(process.env.PORT)
         console.log('MongoDB connection error. Please check the connection string or DB.')
         process.exit(1)
     }

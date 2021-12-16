@@ -46,6 +46,9 @@ class SideBar extends Component {
                         <ListItem button key="PlaylistUpload" component={Link} to={"/PlaylistUpload"} onClick={() => this.handleNewPage("Create playlist", "/PlaylistUpload")}>
                             <ListItemText primary="Create playlist"/>
                         </ListItem>
+                        <ListItem button key="NewSongDisplay" component={Link} to={"NewSongDisplay"}>
+                            <ListItemText primary="NewSongDisplay"/>
+                        </ListItem>
                     </List>
                 </Box>
             </Drawer>
