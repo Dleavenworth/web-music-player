@@ -1,91 +1,24 @@
-import '../App.css'
-import React, {Component} from "react"
-import {
-    Box, Menu, MenuItem,
-    Toolbar, Typography,
-} from "@mui/material"
-import {DataGrid} from '@mui/x-data-grid';
+import React, {useEffect, useState} from 'react'
+import {Box, Menu, MenuItem, Toolbar, Typography} from "@mui/material";
+import {DataGrid} from "@mui/x-data-grid";
 
-export default class SongDisplay extends Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            res: "",
-            songList: this.props.songList,
-            curSong: null,
-            activeIndex: this.props.activeIndex,
-            contextMenu: null,
-            rows: [],
-            columns: [{"field": "name", "headerName": "Name", editable: true, flex: 1}, {
-                "field": "artist",
-                "headerName": "Artist",
-                editable: true,
-                flex: 1
-            },
-                {"field": "genre", "headerName": "Genre", editable: true, flex: 1}],
-            showMenu: false,
-            playlists: this.props.playlists,
-            selectedRow: undefined,
-            selectedRowPlaylistsNum: undefined,
-            showPlaylist: false,
-            xPos: undefined,
-            yPos: undefined
-        }
-    }
+export default function SongDisplay(props) {
+    const [rows, setRows] = useState([])
+    const [showMenu, setShowMenu] = useState(false)
+    const [xPos, setXPos] = useState(0)
+    const [yPos, setYPos] = useState(0)
+    const [selectedRow, setSelectedRow] = useState(undefined)
 
-    handleSongClick = (props) => {
-        console.log(props)
-        this.setCurSong(props.row)
-        this.setState({activeIndex: props.index})
-        this.props.onActiveIndexChange(props.index)
-    }
+    const showPlaylist = window.location.pathname === "/"
+    const drawerWidth = 240
+    const columns = [{"field": "name", "headerName": "Name", editable: true, flex: 1},
+        {"field": "artist", "headerName": "Artist", editable: true, flex: 1},
+        {"field": "genre", "headerName": "Genre", editable: true, flex: 1}]
 
-    componentDidUpdate(prevProps, prevState, snapshot) {
-        if (prevProps !== this.props) {
-            console.log(this.state)
-            this.setState({
-                songList: this.props.songList,
-                activeIndex: this.props.activeIndex,
-                playlists: this.props.playlists,
-                showPlaylist: window.location.pathname === "/",
-                showMenu: false,
-            }, () => {
-                this.songList()
-            })
-        }
-    }
-
-    componentDidMount() {
-        this.songList()
-        this.setState({showPlaylist: window.location.pathname === "/"})
-    }
-
-
-    // This is handleLangChange from SO (child)
-    setCurSong = (curSong) => {
-        this.setState({curSong: curSong})
-        this.props.onCurSongChange(curSong)
-    }
-
-    handleContextMenu = (e) => {
-        e.preventDefault()
-        console.log(e)
-        console.log(e.currentTarget)
-        this.setState({
-            xPos: e.pageX, yPos: e.pageY, showMenu: true, selectedRow:
-                e.currentTarget.getAttribute('data-id'),
-            selectedRowPlaylistNum: e.currentTarget.getAttribute('playlist')
-        })
-    }
-
-    handleClose = () => {
-        this.setState({showMenu: false, selectedRow: undefined})
-    }
-
-    songList = () => {
-        console.log(this.state.songList)
+    // If the songList prop changes then update the rows
+    useEffect(() => {
         let newRows = []
-        this.state.songList.forEach((currentSong) => {
+        props.songList.forEach((currentSong) => {
             console.log(currentSong.playlist)
             let newObject = {
                 id: currentSong._id,
@@ -99,26 +32,39 @@ export default class SongDisplay extends Component {
             console.log(newRows)
             newRows.push(newObject)
         })
-        this.setState({rows: newRows})
+        setRows(newRows)
+    }, [props.songList])
+
+    function handleSongClick(selectedRowProps) {
+        props.onCurSongChange(selectedRowProps.row)
     }
 
-    handleClick = (e, playlist) => {
+    function handleContextMenu(e) {
         e.preventDefault()
-        // we have the current row data, and the entire list of songs, so we need to find the id in the current row in the entire list
-        console.log(this.state.selectedRow)
-        this.props.onSongAdd(this.state.selectedRow, playlist)
-        this.handleClose()
+        setXPos(e.pageX)
+        setYPos(e.pageY)
+        setShowMenu(true)
+        setSelectedRow(e.currentTarget.getAttribute('data-id'))
     }
 
-    listPlaylist = () => {
-        if (this.state.showPlaylist) {
-            console.log(this.state.playlists[0])
-            if (this.state.playlists.length !== 0) {
-                return this.state.playlists.map((curPlaylist, i) => {
-                    console.log(curPlaylist)
+    function handleClose() {
+        setShowMenu(false)
+        setSelectedRow(undefined)
+    }
+
+    function handleClick(e, playlist) {
+        e.preventDefault()
+        props.onSongAdd(selectedRow, playlist)
+        handleClose()
+    }
+
+    function listPlaylist() {
+        if (showPlaylist) {
+            if (props.playlists.length !== 0) {
+                return props.playlists.map((curPlaylist, i) => {
                     return (
-                        <MenuItem key={i} onClick={(e) => this.handleClick(e, curPlaylist)}>
-                            <Typography>Add to <strong>{this.state.playlists[i].name}</strong></Typography>
+                        <MenuItem key={i} onClick={(e) => handleClick(e, curPlaylist)}>
+                            <Typography>Add to <strong>{props.playlists[i].name}</strong></Typography>
                         </MenuItem>
 
                     )
@@ -129,72 +75,68 @@ export default class SongDisplay extends Component {
         }
     }
 
-    deleteSong = () => {
-        let fileID = this.state.songList.find(song => song._id === this.state.selectedRow).fileID
-        this.props.deleteSong(this.state.selectedRow, fileID)
-        this.handleClose()
+    function deleteSong() {
+        let fileID = props.songList.find(song => song._id === selectedRow).fileID
+        props.deleteSong(selectedRow, fileID)
+        handleClose()
     }
 
-    removeFromPlaylist = () => {
+    function removeFromPlaylist() {
         if(window.location.pathname === "/PlaylistDisplay/Playlist") {
-            return(<MenuItem onClick={this.handleRemoveFromPlaylist}><Typography>Remove song from playlist</Typography></MenuItem>)
+            return(<MenuItem onClick={handleRemoveFromPlaylist}><Typography>Remove song from playlist</Typography></MenuItem>)
         }
     }
 
-    handleRemoveFromPlaylist = () => {
-        this.props.removeFromPlaylist(this.state.selectedRow)
-        this.handleClose()
+    function handleRemoveFromPlaylist() {
+        props.removeFromPlaylist(selectedRow)
+        handleClose()
     }
 
-    render() {
-        console.log(this.state)
-        const drawerWidth = 240
-        return (
-            <Box className="App"
-                 sx={{
-                     background: "#f9f9f9",
-                     display: 'flex',
-                     position: "relative",
-                     flexGrow: 1,
-                     flexShrink: 0,
-                     width: `calc(100% - ${drawerWidth}px)`,
-                     ml: `${drawerWidth}px`,
-                 }}
-            >
-                <Box sx={{flexGrow: 1, p: 3}}>
-                    <Toolbar/>
-                    <div style={{height: "72vh"}}>
-                        <DataGrid columns={this.state.columns} rows={this.state.rows}
-                                  onRowClick={this.handleSongClick}
-                                  componentsProps={{
-                                      row:
-                                          {
-                                              onContextMenu: this.handleContextMenu, style: {cursor: 'context-menu'}
+    return (
+        <Box className="App"
+             sx={{
+                 background: "#f9f9f9",
+                 display: 'flex',
+                 position: "relative",
+                 flexGrow: 1,
+                 flexShrink: 0,
+                 width: `calc(100% - ${drawerWidth}px)`,
+                 ml: `${drawerWidth}px`,
+             }}
+        >
+            <Box sx={{flexGrow: 1, p: 3}}>
+                <Toolbar/>
+                <div style={{height: "72vh"}}>
+                    <DataGrid columns={columns} rows={rows}
+                              onRowClick={handleSongClick}
+                              componentsProps={{
+                                  row:
+                                      {
+                                          onContextMenu: handleContextMenu, style: {cursor: 'context-menu'}
 
-                                          }
-                                  }}/>
-                    </div>
-                    <Menu open={this.state.showMenu}
-                          onClose={this.handleClose}
-                          anchorReference="anchorPosition"
-                          anchorPosition={this.state.showMenu ? {
-                              top: this.state.yPos,
-                              left: this.state.xPos
-                          } : null}
-                          componentsProps={{
-                              root: {
-                                  onContextMenu: (e) => {
-                                      e.preventDefault()
-                                      this.handleClose()
-                                  }
+                                      }
+                              }}/>
+                </div>
+                <Menu open={showMenu}
+                      onClose={handleClose}
+                      anchorReference="anchorPosition"
+                      anchorPosition={showMenu ? {
+                          top: yPos,
+                          left: xPos
+                      } : null}
+                      componentsProps={{
+                          root: {
+                              onContextMenu: (e) => {
+                                  e.preventDefault()
+                                  handleClose()
                               }
-                          }}>
-                        {this.listPlaylist()}
-                        <MenuItem onClick={this.deleteSong}><Typography>Delete song</Typography></MenuItem>
-                        {this.removeFromPlaylist()}
-                    </Menu>
-                </Box>
+                          }
+                      }}>
+                    {listPlaylist()}
+                    <MenuItem onClick={deleteSong}><Typography>Delete song</Typography></MenuItem>
+                    {removeFromPlaylist()}
+                </Menu>
             </Box>
-        );
-    }
+        </Box>
+    )
 }
