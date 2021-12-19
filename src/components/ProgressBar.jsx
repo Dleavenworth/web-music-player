@@ -1,4 +1,4 @@
-import {BottomNavigation, BottomNavigationAction, Box, Grid, Slider, Typography,} from "@mui/material";
+import {BottomNavigation, BottomNavigationAction, Box, Grid, Slider, Stack, Typography,} from "@mui/material";
 import Paper from "@mui/material/Paper";
 import React, {Component} from "react";
 import {
@@ -289,7 +289,15 @@ export default class ProgressBar extends Component {
                                                         onClick={this.toggleRepeat}/>
                             </BottomNavigation>
                         </Grid>
-                        <Grid container justifyContent={"flex-end"}>
+                        <Grid item>
+                            <Stack direction="row">
+                                    <VolumeDown sx={{mr: 5}}/>
+                                    <Slider sx={{width: "25vw"}} aria-label="Volume"
+                                            value={this.state.volumeSlider} onChange={this.handleVolumeChange}/>
+                                    <VolumeUp sx={{ml: 5}}/>
+                            </Stack>
+                        </Grid>
+                        {/*<Grid container justifyContent={"flex-end"}>
                             <Grid item xs={1}>
                                 <VolumeDown/>
                             </Grid>
@@ -300,9 +308,9 @@ export default class ProgressBar extends Component {
                             <Grid item xs={1}>
                                 <VolumeUp/>
                             </Grid>
-                        </Grid>
+                        </Grid>*/}
                         <Grid item xs={12}>
-                            <Slider aria-label="Progress" sx={{width: "98vw"}} value={this.state.progress}
+                            <Slider aria-label="Progress" sx={{ml: "1vw", width: "98vw"}} value={this.state.progress}
                                     onChange={this.handleSeek}
                                     onMouseDown={this.toggleSeeking}
                                     onMouseUp={this.toggleSeeking}/>

@@ -121,8 +121,7 @@ class Upload extends Component {
             <Box sx={{
                 display: 'flex',
                 flexGrow: 1,
-                width: `calc(100% - ${drawerWidth}px)`,
-                ml: `${drawerWidth}px`,
+                ml: `calc(20% + ${drawerWidth}px)`,
             }}>
                 <Grid container spacing={2}>
                     <Box sx={{pt: 5, flexGrow: 1}}>
@@ -141,7 +140,7 @@ class Upload extends Component {
                                            value={this.state.file}/>
                             </form>
                         </Grid>
-                        <Grid sx={{pt: 5}} item xs={12}>
+                        <Grid sx={{ml: 50, pt: 5}} item xs={12}>
                             <Button onClick={(e) => this.newFile(e)} type="submit" variant="contained"
                                     component="label">
                                 Upload File

@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {Box, Menu, MenuItem, Toolbar, Typography} from "@mui/material";
-import {Redirect} from 'react-router-dom'
+import {Navigate} from 'react-router-dom'
 import {DataGrid} from "@mui/x-data-grid";
 
 export default class PlaylistDisplay extends Component {
@@ -78,7 +78,7 @@ export default class PlaylistDisplay extends Component {
         const drawerWidth = 240
         console.log(this.state.playlistList)
         if (this.state.redirect) {
-            return (<Redirect to={"/PlaylistDisplay/Playlist"}/>)
+            return (<Navigate to={"/PlaylistDisplay/Playlist"}/>)
         } else {
             return (
                 <Box className="App"

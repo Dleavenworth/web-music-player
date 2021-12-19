@@ -1,5 +1,5 @@
 import Upload from "./components/Upload"
-import {Route, Switch} from "react-router-dom"
+import {Routes, Route} from "react-router-dom"
 import {Box, CssBaseline} from "@mui/material"
 import SideBar from "./components/SideBar"
 import React, {Component} from "react"
@@ -214,29 +214,30 @@ export default class App extends Component {
                 <CssBaseline/>
                 <TopBar pageName={this.state.curPage} handleNewSearch={this.setNewSearch}/>
                 <SideBar onCurPageChange={this.setCurPage}/>
-                <Switch>
-                    <Route exact path="/"><SongDisplay songList={this.state.songList}
-                                                       onCurSongChange={this.setParentCurSong}
-                                                       onActiveIndexChange={this.setActiveIndex}
-                                                       playlists={this.state.playlistList}
-                                                       onSongAdd={this.addToPlaylist}
-                                                       makeSearch={this.makeSearch} deleteSong={this.deleteSong}/></Route>
-                    <Route exact path="/Upload"><Upload handleAddedSong={this.setNewSearch} curSongs={this.state.songList}
-                                                        usePort={this.state.usePort} port={this.state.port}/></Route>
-                    <Route exact path="/PlaylistUpload"><PlaylistUpload onPlaylistAdd={this.addPlaylist} curPlaylists={this.state.playlistList}/></Route>
-                    <Route exact path="/PlaylistDisplay"><PlaylistDisplay selectedPlaylist={this.state.selectedPlaylist}
-                                                                          playlistList={this.state.playlistList}
-                                                                          onPlaylistSelect={this.setSelectedPlaylist}
-                                                                          deletePlaylist={this.deletePlaylist}
-                                                                          handleChange={this.handleChange}/></Route>
-                    <Route exact path="/PlaylistDisplay/Playlist"><SongDisplay songList={this.state.playlistSongList}
-                                                                               onCurSongChange={this.setParentCurSong}
-                                                                               onActiveIndexChange={this.setActiveIndex}
-                                                                               removeFromPlaylist={this.removeFromPlaylist}
-                                                                               deleteSong={this.deleteSong}/></Route>
-                    <Route exact path="/Settings"><Settings/></Route>
+                <Routes>
+                    <Route exact path="/" element={<SongDisplay songList={this.state.songList}
+                                            onCurSongChange={this.setParentCurSong}
+                                            onActiveIndexChange={this.setActiveIndex}
+                                            playlists={this.state.playlistList}
+                                            onSongAdd={this.addToPlaylist}
+                                            makeSearch={this.makeSearch} deleteSong={this.deleteSong}/>}/>
+                    <Route exact path="Upload" element={<Upload handleAddedSong={this.setNewSearch} curSongs={this.state.songList}
+                                             usePort={this.state.usePort} port={this.state.port}/>}/>
+                    <Route exact path="PlaylistUpload" element={<PlaylistUpload onPlaylistAdd={this.addPlaylist}
+                                                             curPlaylists={this.state.playlistList}/>}/>
+                    <Route exact path="PlaylistDisplay" element={<PlaylistDisplay selectedPlaylist={this.state.selectedPlaylist}
+                                                               playlistList={this.state.playlistList}
+                                                               onPlaylistSelect={this.setSelectedPlaylist}
+                                                               deletePlaylist={this.deletePlaylist}
+                                                               handleChange={this.handleChange}/>}/>
+                    <Route exact path="PlaylistDisplay/Playlist" element={<SongDisplay songList={this.state.playlistSongList}
+                                                                    onCurSongChange={this.setParentCurSong}
+                                                                    onActiveIndexChange={this.setActiveIndex}
+                                                                    removeFromPlaylist={this.removeFromPlaylist}
+                                                                    deleteSong={this.deleteSong}/>}/>
+                    <Route exact path="Settings" element={<Settings/>}/>
 
-                </Switch>
+                </Routes>
                 <ProgressBar songList={this.state.songList} curSong={this.state.curSong}
                              onActiveIndexChange={this.setActiveIndex} usePort={this.state.usePort} port={this.state.port}/>
             </Box>
