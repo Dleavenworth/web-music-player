@@ -6,11 +6,11 @@ import ListItemText from "@mui/material/ListItemText";
 import Drawer from "@mui/material/Drawer";
 import React from "react";
 
-export default function SideBar() {
+export default function SideBar(props) {
     const drawerWidth = 240
 
     function handleNewPage(newPageName, newPagePath) {
-
+        props.onCurPageChange(newPageName)
     }
 
     return (
