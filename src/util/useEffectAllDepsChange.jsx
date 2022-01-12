@@ -6,6 +6,8 @@ const usePrevious = (value) => {
 	useEffect(() => {
 		ref.current = value
 	}, [value])
+
+	return ref.current
 }
 
 export default function useEffectAllDepsChange(fn, deps) {

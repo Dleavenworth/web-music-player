@@ -1,4 +1,4 @@
-import Upload from "./components/NewUpload"
+import Upload from "./components/Upload"
 import {Routes, Route} from "react-router-dom"
 import {Box, CssBaseline} from "@mui/material"
 import SideBar from "./components/SideBar"

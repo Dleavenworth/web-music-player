@@ -11,7 +11,7 @@
         "ecmaFeatures": {
             "jsx": true
         },
-        "ecmaVersion": 13,
+        "ecmaVersion": 2021,
         "sourceType": "module"
     },
     "plugins": [
@@ -21,7 +21,8 @@
     "rules": {
         "indent": [
             "error",
-            "tab"
+            "tab",
+            {"SwitchCase": 1}
         ],
         "linebreak-style": [
             "error",
