@@ -3,7 +3,7 @@ import useEffectAllDepsChange from "./../util/useEffectAllDepsChange"
 import {Grid, Box, TextField, Popover, Button, Typography, Toolbar} from "@mui/material"
 import PropTypes from "prop-types"
 
-export default function NewUpload(props) {
+export default function Upload(props) {
 	const [file, setFile] = useState("")
 	const [artist, setArtist] = useState("")
 	const [genre, setGenre] = useState("")
@@ -22,8 +22,6 @@ export default function NewUpload(props) {
 	const drawerWidth = 240
 	let id = open ? "simple-popover" : undefined
 
-
-	// The issue right now is that this function in /util does not work
 	useEffectAllDepsChange(() => {
 		console.log("all deps change")
 		createNewEntry()
@@ -142,7 +140,7 @@ export default function NewUpload(props) {
 	)
 }
 
-NewUpload.propTypes = {
+Upload.propTypes = {
 	usePort: PropTypes.bool.isRequired,
 	handleAddedSong: PropTypes.func.isRequired,
 	port: PropTypes.string.isRequired,

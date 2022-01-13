@@ -1,127 +1,130 @@
-import React, {Component} from "react"
-import {Box, Menu, MenuItem, Toolbar, Typography} from "@mui/material"
-import {Navigate} from "react-router-dom"
-import {DataGrid} from "@mui/x-data-grid"
+import React, { useState, useEffect } from "react"
+import { Box, Menu, MenuItem, Toolbar, Typography } from "@mui/material"
+import { Navigate } from "react-router-dom"
+import { DataGrid } from "@mui/x-data-grid"
+import PropTypes from "prop-types"
 
-export default class PlaylistDisplay extends Component {
-	constructor(props) {
-		super(props)
-		this.state = {
-			playlistList: this.props.playlistList,
-			activeIndex: undefined,
-			columns: [{"field": "name", "headerName": "Name", editable: true, flex: 1}, {
-				"field": "num",
-				"headerName": "Number of songs",
-				flex: 1
-			}],
-			redirect: false,
-			yPos: undefined,
-			xPos: undefined,
-			showMenu: false
-		}
-	}
+export default function PlaylistDisplay(props) {
+	const [redirect, setRedirect] = useState(false)
+	const [yPos, setYPos] = useState(undefined)
+	const [xPos, setXPos] = useState(undefined)
+	const [showMenu, setShowMenu] = useState(false)
+	const [rows, setRows] = useState([])
+	const [selectedRow, setSelectedRow] = useState(undefined)
 
-	componentDidUpdate(prevProps, prevState, snapshot) {
-		if (prevProps !== this.props) {
-			console.log(this.state)
-			this.setState({playlistList: this.props.playlistList}, () => {
-				this.listPlaylist()
-			})
-		}
-	}
+	const drawerWidth = 240
+	const columns = [
+		{ field: "name", headerName: "Name", editable: true, flex: 1 },
+		{ field: "num", headerName: "Number of songs", flex: 1 },
+	]
 
-	componentDidMount() {
-		this.listPlaylist()
-	}
+	useEffect(() => {
+		listPlaylist()
 
+	}, [props.playlistList])
 
-	listPlaylist = () => {
+	const listPlaylist = () => {
 		let newRows = []
-		this.state.playlistList.forEach(curPlaylist => {
-			let newObject = {id: curPlaylist._id, name: curPlaylist.name, num: curPlaylist.songs.length}
+		props.playlistList.forEach((curPlaylist) => {
+			let newObject = {
+				id: curPlaylist._id,
+				name: curPlaylist.name,
+				num: curPlaylist.songs.length,
+			}
 			newRows.push(newObject)
 		})
-		this.setState({rows: newRows})
+		setRows(newRows)
 	}
 
-	handlePlaylistClick = (props) => {
-		this.setState({activeIndex: props.index})
-		this.props.onPlaylistSelect(props.row.id)
-		this.setState({redirect: true})
+	const handlePlaylistClick = (e) => {
+		props.onPlaylistSelect(e.row.id)
+		setRedirect(true)
 	}
 
-	handleClose = () => {
-		this.setState({showMenu: false})
+	const handleClose = () => {
+		setShowMenu(false)
 	}
 
-	deletePlaylist = () => {
-		this.props.deletePlaylist(this.state.selectedRow)
-		this.handleClose()
+	const deletePlaylist = () => {
+		props.deletePlaylist(selectedRow)
+		handleClose()
 	}
 
-	handleContextMenu = (e) => {
+	const handleContextMenu = (e) => {
 		e.preventDefault()
-		this.setState({
-			xPos: e.pageX,
-			yPos: e.pageY,
-			showMenu: true,
-			selectedRow: e.currentTarget.getAttribute("data-id")
-		})
+		setXPos(e.pageX)
+		setYPos(e.pageY)
+		setShowMenu(true)
+		setSelectedRow(e.currentTarget.getAttribute("data-id"))
 	}
 
-	handleChangedData = (changedData) => {
+	const handleChangedData = (changedData) => {
 		console.log(changedData)
-		this.props.onChange(true, changedData)
+		props.onChange(true, changedData)
 	}
 
-	render() {
-		const drawerWidth = 240
-		console.log(this.state.playlistList)
-		if (this.state.redirect) {
-			return (<Navigate to={"/PlaylistDisplay/Playlist"}/>)
-		} else {
-			return (
-				<Box className="App"
-					sx={{
-						background: "#f9f9f9",
-						display: "flex",
-						flexGrow: 1,
-						width: `calc(100% - ${drawerWidth}px)`,
-						ml: `${drawerWidth}px`,
-					}}
-				>
-					<Box sx={{flexGrow: 1, p: 3}}>
-						<Toolbar/>
-						<DataGrid columns={this.state.columns} rows={this.state.rows}
-							onRowClick={this.handlePlaylistClick}
-							onCellEditCommit={this.handleChangedData}
-							componentsProps={{
-								row:
-                                          {
-                                          	onContextMenu: this.handleContextMenu, style: {cursor: "context-menu"}
-
-                                          }
-							}}/>
-						<Menu open={this.state.showMenu}
-							onClose={this.handleClose}
-							anchorReference="anchorPosition"
-							anchorPosition={this.state.showMenu ? {
-								top: this.state.yPos,
-								left: this.state.xPos
-							} : null}
-							componentsProps={{
-								root: {
-									onContextMenu: (e) => {
-										e.preventDefault()
-										this.handleClose()
-									}
+	if (redirect) {
+		return <Navigate to={"/PlaylistDisplay/Playlist"} />
+	} else {
+		return (
+			<Box
+				className="App"
+				sx={{
+					background: "#f9f9f9",
+					display: "flex",
+					flexGrow: 1,
+					width: `calc(100% - ${drawerWidth}px)`,
+					ml: `${drawerWidth}px`,
+				}}
+			>
+				<Box sx={{ flexGrow: 1, p: 3 }}>
+					<Toolbar />
+					<DataGrid
+						columns={columns}
+						rows={rows}
+						onRowClick={handlePlaylistClick}
+						onCellEditCommit={handleChangedData}
+						componentsProps={{
+							row: {
+								onContextMenu: handleContextMenu,
+								style: { cursor: "context-menu" },
+							},
+						}}
+					/>
+					<Menu
+						open={showMenu}
+						onClose={handleClose}
+						anchorReference="anchorPosition"
+						anchorPosition={
+							showMenu
+								? {
+									top: yPos,
+									left: xPos,
 								}
-							}}>
-							<MenuItem onClick={this.deletePlaylist}><Typography>Delete playlist</Typography></MenuItem>
-						</Menu>
-					</Box>
+								: null
+						}
+						componentsProps={{
+							root: {
+								onContextMenu: (e) => {
+									e.preventDefault()
+									handleClose()
+								},
+							},
+						}}
+					>
+						<MenuItem onClick={deletePlaylist}>
+							<Typography>Delete playlist</Typography>
+						</MenuItem>
+					</Menu>
 				</Box>
-			)
-		}
+			</Box>
+		)
 	}
+}
+
+PlaylistDisplay.propTypes = {
+	onPlaylistSelect: PropTypes.func.isRequired,
+	deletePlaylist: PropTypes.func.isRequired,
+	onChange: PropTypes.func.isRequired,
+	playlistList: PropTypes.array.isRequired
 }
