@@ -20,5 +20,6 @@
   "devDependencies": {
     "eslint": "^7.11.0",
     "eslint-plugin-react": "^7.28.0"
-  }
+  },
+  "type": "module"
 }

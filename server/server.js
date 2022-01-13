@@ -1,16 +1,19 @@
-const express = require("express")
+import express from "express"
 const app = express()
-const cors = require("cors")
-require("dotenv").config({path: "config.env"})
+import cors from "cors"
+import dotenv from "dotenv"
+import { dirname } from "path"
+import { fileURLToPath } from "url"
+const __dirname = dirname(fileURLToPath(import.meta.url))
+dotenv.config({path: "config.env"})
 const port = process.env.PORT || 5000
 app.use(cors())
 app.use(express.json())
-const mongodb = require("mongodb")
-const {ObjectId} = require("mongodb")
+import mongodb, { ObjectId } from "mongodb"
 const MongoClient = mongodb.MongoClient
-const multer = require("multer")
-const {Readable} = require("readable-stream")
-const path = require("path")
+import multer from "multer"
+import { Readable } from "readable-stream"
+import path from "path"
 const Db = process.env.ATLAS_URI
 //const Db = "mongodb+srv://root:<password>@songdb.17be8.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
 const audioRoute = express.Router()
@@ -68,9 +71,6 @@ songRoute.post("/", (req, res) => {
 })
 
 audioRoute.get("/:songID", (req, res) => {
-	let byteCount = 0
-	const realString = JSON.stringify(req.query.songID)
-	console.log("First log: " + realString + " end")
 	let songID
 
 	try {
@@ -99,7 +99,6 @@ audioRoute.get("/:songID", (req, res) => {
 
 	downloadStream.on("data", (chunk) => {
 		console.log("writing audio")
-		byteCount += Buffer.from(chunk).length
 		res.write(chunk)
 	})
 
@@ -109,7 +108,6 @@ audioRoute.get("/:songID", (req, res) => {
 	})
 
 	downloadStream.on("end", () => {
-		console.log(byteCount)
 		console.log(res)
 		res.end()
 	})
@@ -186,13 +184,13 @@ uploadRoute.post("/", (req, res) => {
 songRoute.delete("/", (req, res) => {
 	console.log(req.query)
 	if(req.query.songID !== "undefined" && req.query.fileID !== "undefined") {
-		db.collection("SongInfo").deleteOne({_id: new ObjectId(req.query.songID)}, (err, result) => {
+		db.collection("SongInfo").deleteOne({_id: new ObjectId(req.query.songID)}, (err) => {
 			if (err) throw err
-			db.collection("Playlists").updateMany({}, {$pull: {"songs": new ObjectId(req.query.songID)}}, (err, result) => {
+			db.collection("Playlists").updateMany({}, {$pull: {"songs": new ObjectId(req.query.songID)}}, (err) => {
 				if (err) throw err
-				db.collection("fs.files").deleteOne({_id: new ObjectId(req.query.fileID)}, (err, result) => {
+				db.collection("fs.files").deleteOne({_id: new ObjectId(req.query.fileID)}, (err) => {
 					if (err) throw err
-					db.collection("fs.chunks").deleteMany({files_id: new ObjectId(req.query.fileID)}, (err, result) => {
+					db.collection("fs.chunks").deleteMany({files_id: new ObjectId(req.query.fileID)}, (err) => {
 						if (err) throw err
 						res.status(200).json({message: "Deleted song"})
 					})
@@ -274,9 +272,9 @@ playlistRoute.post("/addPlaylist", (req, res) => {
 })
 
 playlistRoute.delete("/", (req, res) => {
-	db.collection("Playlists").deleteOne({_id: new ObjectId(req.query.playlistID)}, (err, result) => {
+	db.collection("Playlists").deleteOne({_id: new ObjectId(req.query.playlistID)}, (err) => {
 		if (err) throw err
-		db.collection("SongInfo").updateMany({}, {$pull: {"playlist": new ObjectId(req.query.playlistID)}}, (err, result) => {
+		db.collection("SongInfo").updateMany({}, {$pull: {"playlist": new ObjectId(req.query.playlistID)}}, (err) => {
 			if (err) throw err
 			res.status(200).json({message: "Deleted playlist"})
 		})
@@ -284,9 +282,9 @@ playlistRoute.delete("/", (req, res) => {
 })
 
 playlistRoute.delete("/display", (req, res) => {
-	db.collection("Playlists").updateOne({_id: new ObjectId(req.query.playlistID)}, {$pull: {"songs": new ObjectId(req.query.songID)}}, (err, result) => {
+	db.collection("Playlists").updateOne({_id: new ObjectId(req.query.playlistID)}, {$pull: {"songs": new ObjectId(req.query.songID)}}, (err) => {
 		if (err) throw err
-		db.collection("SongInfo").updateOne({_id: new ObjectId(req.query.songID)}, {$pull: {"playlist": new ObjectId(req.query.playlistID)}}, (err, result) => {
+		db.collection("SongInfo").updateOne({_id: new ObjectId(req.query.songID)}, {$pull: {"playlist": new ObjectId(req.query.playlistID)}}, (err) => {
 			if (err) throw err
 			res.status(200).json({message: "Removed song from playlist"})
 		})
