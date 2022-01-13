@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { Box, Menu, MenuItem, Toolbar, Typography } from "@mui/material"
 import { DataGrid } from "@mui/x-data-grid"
+import PropTypes from "prop-types"
 
 export default function SongDisplay(props) {
 	const [rows, setRows] = useState([])
@@ -163,4 +164,14 @@ export default function SongDisplay(props) {
 			</Box>
 		</Box>
 	)
+}
+
+SongDisplay.propTypes = {
+	songList: PropTypes.array.isRequired,
+	onCurSongAdd: PropTypes.func.isRequired,
+	playlists: PropTypes.array.isRequired,
+	onCurSongChange: PropTypes.func.isRequired,
+	onSongAdd: PropTypes.func.isRequired,
+	deleteSong: PropTypes.func.isRequired,
+	removeFromPlaylist: PropTypes.func.isRequired
 }
