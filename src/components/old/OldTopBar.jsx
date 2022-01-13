@@ -1,9 +1,8 @@
-import React, { useState, useEffect, useRef} from "react"
-import { alpha, AppBar, createTheme, InputBase, Toolbar, Typography } from "@mui/material"
+import {alpha, AppBar, createTheme, InputBase, Toolbar, Typography} from "@mui/material"
+import React, { Component } from "react"
 import SearchIcon from "@mui/icons-material/Search"
 import styled from "@emotion/styled"
-import { ThemeProvider } from "@emotion/react"
-import PropTypes from "prop-types"
+import {ThemeProvider} from "@emotion/react"
 
 const theme = createTheme({})
 
@@ -47,22 +46,16 @@ const StyledInputBase = styled(InputBase)(({theme}) => ({
 	},
 }))
 
-export default function TopBar(props) {
-	const [pageName, setPageName] = useState(props.pageName)
 
-	const inputRef = useRef()
-
-	useEffect(() => {
-		setPageName(props.pageName)
-		inputRef.current.value = ""
-		props.handleNewSearch(undefined, "/song", "songList")
-		props.handleNewSearch(undefined, "/playlist", "playlist")
-		if(window.location.pathname === "/PlaylistDisplay/Playlist") {
-			props.handleNewSearch(undefined, "/playlist/display", "playlistList")
+export default class TopBar extends Component {
+	constructor(props) {
+		super(props)
+		this.state = {
+			pageName: this.props.pageName
 		}
-	}, [props.pageName])
+	}
 
-	const newSearch = (newSearch) => {
+	newSearch = (newSearch) => {
 		let stateVar
 		let pathname = window.location.pathname
 		console.log("pre-logic " + pathname)
@@ -80,35 +73,37 @@ export default function TopBar(props) {
 		}
 		console.log("statevar " + stateVar)
 		console.log("pathname" + pathname)
-		props.handleNewSearch(newSearch.target.value, pathname, stateVar)
+		this.props.handleNewSearch(newSearch.target.value, pathname, stateVar)
 	}
 
-	return (
-		<ThemeProvider theme={theme}>
-			<AppBar position="fixed" sx={{zIndex: (theme) => theme.zIndex.drawer + 1}}>
-				<Toolbar>
-					<Typography variant="h6" noWrap component="div">
-						{pageName}
-					</Typography>
-					<Search>
-						<SearchIconWrapper>
-							<SearchIcon/>
-						</SearchIconWrapper>
-						<StyledInputBase
-							inputRef={inputRef}
-							placeholder="Search…"
-							defaultValue={""}
-							inputProps={{"aria-label": "search"}}
-							onChange={newSearch}
-						/>
-					</Search>
-				</Toolbar>
-			</AppBar>
-		</ThemeProvider>
-	)
-}
+	componentDidUpdate(prevProps, prevState, snapshot) {
+		if(this.props.pageName !== prevState.pageName) {
+			this.setState({pageName: this.props.pageName})
+		}
+	}
 
-TopBar.propTypes = {
-	pageName: PropTypes.string.isRequired,
-	handleNewSearch: PropTypes.func.isRequired
+	render() {
+		return (
+			<ThemeProvider theme={theme}>
+				<AppBar position="fixed" sx={{zIndex: (theme) => theme.zIndex.drawer + 1}}>
+					<Toolbar>
+						<Typography variant="h6" noWrap component="div">
+							{this.state.pageName}
+						</Typography>
+						<Search>
+							<SearchIconWrapper>
+								<SearchIcon/>
+							</SearchIconWrapper>
+							<StyledInputBase
+								placeholder="Search…"
+								defaultValue={undefined}
+								inputProps={{"aria-label": "search"}}
+								onChange={this.newSearch}
+							/>
+						</Search>
+					</Toolbar>
+				</AppBar>
+			</ThemeProvider>
+		)
+	}
 }

@@ -5,11 +5,12 @@ import {Link} from "react-router-dom"
 import ListItemText from "@mui/material/ListItemText"
 import Drawer from "@mui/material/Drawer"
 import React from "react"
+import PropTypes from "prop-types"
 
 export default function SideBar(props) {
 	const drawerWidth = 240
 
-	function handleNewPage(newPageName, newPagePath) {
+	function handleNewPage(newPageName) {
 		props.onCurPageChange(newPageName)
 	}
 
@@ -41,4 +42,8 @@ export default function SideBar(props) {
 			</Box>
 		</Drawer>
 	)
+}
+
+SideBar.propTypes = {
+	onCurPageChange: PropTypes.func.isRequired
 }
