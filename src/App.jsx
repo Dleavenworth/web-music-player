@@ -193,7 +193,7 @@ export default class App extends Component {
 			.then(response => response.json())
 			.then(data => {
 				console.log(data)
-				this.makeSearch(undefined, "/playlist", "playlist", undefined)
+				this.makeSearch(undefined, "/playlist", "playlistList", undefined)
 				this.setSelectedPlaylist(this.state.curPlaylist)
 			})
 	}

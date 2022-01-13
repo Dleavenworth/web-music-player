@@ -26,7 +26,7 @@
     "web-vitals": "^2.1.2"
   },
   "scripts": {
-    "start": "node server/server.js",
+    "start": "node server/index.js",
     "dev-start": "cross-env PORT=3000 react-scripts start",
     "build": "react-scripts build && (cd server && npm i)",
     "test": "react-scripts test",
