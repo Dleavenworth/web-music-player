@@ -8,7 +8,7 @@ export default function SongDisplay(props) {
 	const [showMenu, setShowMenu] = useState(false)
 	const [xPos, setXPos] = useState(0)
 	const [yPos, setYPos] = useState(0)
-	const [selectedRow, setSelectedRow] = useState(undefined)
+	const [selectedRow, setSelectedRow] = useState("")
 
 	const showPlaylist = window.location.pathname === "/"
 	const drawerWidth = 240
@@ -26,6 +26,7 @@ export default function SongDisplay(props) {
 				console.log(currentSong.playlist)
 				let newObject = {
 					id: currentSong._id,
+					_id: currentSong._id,
 					name: currentSong.name,
 					artist: currentSong.artist,
 					length: currentSong.length,
@@ -167,11 +168,11 @@ export default function SongDisplay(props) {
 }
 
 SongDisplay.propTypes = {
-	songList: PropTypes.array.isRequired,
-	onCurSongAdd: PropTypes.func.isRequired,
-	playlists: PropTypes.array.isRequired,
-	onCurSongChange: PropTypes.func.isRequired,
-	onSongAdd: PropTypes.func.isRequired,
-	deleteSong: PropTypes.func.isRequired,
-	removeFromPlaylist: PropTypes.func.isRequired
+	songList: PropTypes.array,
+	onCurSongAdd: PropTypes.func,
+	playlists: PropTypes.array,
+	onCurSongChange: PropTypes.func,
+	onSongAdd: PropTypes.func,
+	deleteSong: PropTypes.func,
+	removeFromPlaylist: PropTypes.func
 }

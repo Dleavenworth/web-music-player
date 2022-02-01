@@ -141,8 +141,8 @@ export default function Upload(props) {
 }
 
 Upload.propTypes = {
-	usePort: PropTypes.bool.isRequired,
-	handleAddedSong: PropTypes.func.isRequired,
-	port: PropTypes.string.isRequired,
-	curSongs: PropTypes.array.isRequired
+	usePort: PropTypes.bool,
+	handleAddedSong: PropTypes.func,
+	port: PropTypes.string,
+	curSongs: PropTypes.array
 }

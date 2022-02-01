@@ -109,6 +109,6 @@ export default function TopBar(props) {
 }
 
 TopBar.propTypes = {
-	pageName: PropTypes.string.isRequired,
-	handleNewSearch: PropTypes.func.isRequired
+	pageName: PropTypes.string,
+	handleNewSearch: PropTypes.func
 }

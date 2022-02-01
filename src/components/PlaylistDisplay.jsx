@@ -123,8 +123,8 @@ export default function PlaylistDisplay(props) {
 }
 
 PlaylistDisplay.propTypes = {
-	onPlaylistSelect: PropTypes.func.isRequired,
-	deletePlaylist: PropTypes.func.isRequired,
-	onChange: PropTypes.func.isRequired,
-	playlistList: PropTypes.array.isRequired
+	onPlaylistSelect: PropTypes.func,
+	deletePlaylist: PropTypes.func,
+	onChange: PropTypes.func,
+	playlistList: PropTypes.array
 }

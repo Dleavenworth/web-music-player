@@ -45,5 +45,5 @@ export default function SideBar(props) {
 }
 
 SideBar.propTypes = {
-	onCurPageChange: PropTypes.func.isRequired
+	onCurPageChange: PropTypes.func
 }
