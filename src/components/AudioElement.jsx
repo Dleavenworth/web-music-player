@@ -1,8 +1,8 @@
-import React from "react"
+import React, { useRef } from "react"
 
 export default function AudioElement(props) {
 
-	let { audioSrc, audioRef, repeat } = props
+	let { audioSrc, repeat } = props
 
 	const startInterval = () => {
 		props.startInterval()
@@ -15,11 +15,11 @@ export default function AudioElement(props) {
 	const nextSong = () => {
 		props.nextSong()
 	}
-
+ 
 	return (
 		<audio
 			src={audioSrc}
-			ref={audioRef}
+			ref={props.audioRef}
 			autoPlay
 			onEnded={repeat ? repeatSong : nextSong}
 			onPlay={() => startInterval()}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useRef } from "react"
 import Paper from "@mui/material/Paper"
 import { Grid, Box } from "@mui/material"
 import PlaybackControl from "./PlaybackControl"
@@ -9,6 +9,11 @@ export default function ProgressBar(props) {
 	const [isPlay, setIsPlay] = useState(false)
 	const [audioSrc, setAudioSrc] = useState(undefined)
 	const [volume, setVolume] = useState(20)
+	const [songList, setSongList] = useState(props.songList)
+
+	const audioRef = useRef()
+
+	let curSongIndex = undefined
 	let usePort = true
 	let port = 5000
 
@@ -22,12 +27,30 @@ export default function ProgressBar(props) {
 					"/audio/" +
 					props.curSong.fileID
 			)
+			setIsPlay(true)
 		}
 		console.log(props)
 	}, [props.curSong])
 
+	const nextSong = () => {
+		if(props.curSong) {
+		curSongIndex++
+		setNextSong()
+		}
+	}
+
+	const setNextSong = () => {
+		setAudioSrc(window.location.protocol + "//" + window.location.hostname + (usePort ? ":" + port + "" ) + "/audio/" + props.curSong.fileID)
+	}
+
 	const handlePlayToggle = () => {
 		setIsPlay(!isPlay)
+		if(audioRef.current.paused) {
+			audioRef.current.play()
+		}
+		else {
+			audioRef.current.pause()
+		}
 	}
 
 	return (
@@ -54,7 +77,7 @@ export default function ProgressBar(props) {
 					/>
 				</Grid>
 			</Paper>
-			<AudioElement audioSrc={audioSrc} audioRef={props.audioRef} />
+			<AudioElement audioSrc={audioSrc} audioRef={audioRef} />
 		</Box>
 	)
 }

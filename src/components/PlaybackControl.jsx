@@ -18,12 +18,11 @@ export default function PlayBackControl(props) {
 	let { isPlay, audioSrc, volume } = props
 	const [repeat, setRepeat] = useState(false)
 	const [shuffle, setShuffle] = useState(false)
+
+
+	let curSongIndex = undefined
 	let seek = false
 	let progress = 0
-
-	/*useEffect(() => {
-		isPlay = props.isPlay
-	}, [props.isPlay])*/
 
 	const previousSong = () => {
 		props.previousSong()
