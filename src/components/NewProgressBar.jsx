@@ -9,11 +9,11 @@ export default function ProgressBar(props) {
 	const [isPlay, setIsPlay] = useState(false)
 	const [audioSrc, setAudioSrc] = useState(undefined)
 	const [volume, setVolume] = useState(20)
-	const [songList, setSongList] = useState(props.songList)
+	const [curSong, setCurSong] = useState(props.curSong)
 
 	const audioRef = useRef()
 
-	let curSongIndex = undefined
+	let curSongIndex = useRef(undefined)
 	let usePort = true
 	let port = 5000
 
@@ -28,19 +28,48 @@ export default function ProgressBar(props) {
 					props.curSong.fileID
 			)
 			setIsPlay(true)
+			setCurSong(props.curSong)
 		}
 		console.log(props)
 	}, [props.curSong])
 
+	useEffect(() => {
+		console.log(curSong)
+		if(curSong) {
+			findSongIndex()
+			console.log("WE ARE IN THE RIGHT USE EFFECT")
+			setAudioSrc(window.location.protocol + "//" + window.location.hostname + (usePort ? ":" + port + "" : "") + "/audio/" + curSong.fileID)
+		}
+	}, [curSong])
+
+	const findSongIndex = () => {
+		curSongIndex.current = props.songList.findIndex(song => song._id === curSong._id)
+		console.log("FOUND IT AT INDEX: " + curSongIndex.current)
+	}
+
 	const nextSong = () => {
 		if(props.curSong) {
-		curSongIndex++
-		setNextSong()
+			console.log("in nextSong")
+			curSongIndex.current++
+			console.log(curSongIndex.curent)
+			setSong()
 		}
 	}
 
-	const setNextSong = () => {
-		setAudioSrc(window.location.protocol + "//" + window.location.hostname + (usePort ? ":" + port + "" ) + "/audio/" + props.curSong.fileID)
+	const previousSong = () => {
+		console.log(curSongIndex.current)
+		if(props.curSong && curSongIndex.current-1 >= 0) {
+			console.log("in prev song")
+			curSongIndex.current--
+			console.log(curSongIndex.current)
+			setSong()
+		}
+	} 
+
+	const setSong = () => {
+		console.log(props.songList[curSongIndex.current])
+		console.log(props.songList)
+		setCurSong(props.songList[curSongIndex.current])
 	}
 
 	const handlePlayToggle = () => {
@@ -67,13 +96,15 @@ export default function ProgressBar(props) {
 			<Paper elevation={3}>
 				<Grid container spacing={1}>
 					<Grid item xs={4}>
-						<CurrentStatus curSong={props.curSong} />
+						<CurrentStatus curSong={curSong} />
 					</Grid>
 					<PlaybackControl
 						isPlay={isPlay}
 						audioSrc={audioSrc}
 						volume={volume}
 						handlePlayToggle={() => handlePlayToggle()}
+						nextSong={() => nextSong()}
+						previousSong={() => previousSong()}
 					/>
 				</Grid>
 			</Paper>

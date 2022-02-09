@@ -5,7 +5,6 @@ export default function AudioElement(props) {
 	let { audioSrc, repeat } = props
 
 	const startInterval = () => {
-		props.startInterval()
 	}
 
 	const repeatSong = () => {
